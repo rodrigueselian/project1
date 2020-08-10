@@ -38,6 +38,29 @@ def search(request):
     else:
         return redirect('title', title=query)
 
+def newpage(request):
+    if request.method == "GET":
+        return render(request, "encyclopedia/new.html")
+    else:
+        title = request.POST["title"]
+        text = request.POST["text"]
+        util.save_entry(title, text)
+        return redirect('title', title=title)
+    
+
+def edit(request, title):
+    if request.method == "GET":
+        text = util.get_entry(title)
+        return render(request, "encyclopedia/edit.html", {
+            "title": title,
+            "text": text
+        })
+    else:
+        text = request.POST["text"]
+        util.save_entry(title, text)
+        return redirect('title', title=title)
+    
+
 def rand(request):
     entries = util.list_entries()
     selected = random.choice(entries)
