@@ -18,7 +18,9 @@ def getpage(request, title):
             "text": text            
         })
     except TypeError:
-        return render(request, "encyclopedia/error.html")
+        return render(request, "encyclopedia/error.html", {
+            "error": "notfound"
+        })
 
 def search(request):
     query = request.POST["q"]
@@ -30,7 +32,9 @@ def search(request):
             if query.lower() in entry.lower():
                 result.append(entry)
         if result == []:
-            return render(request, "encyclopedia/error.html")
+            return render(request, "encyclopedia/error.html", {
+                "error": "noresults"
+            })
         else:
             return render(request, "encyclopedia/search.html", {
                 "results": result
@@ -42,11 +46,16 @@ def newpage(request):
     if request.method == "GET":
         return render(request, "encyclopedia/new.html")
     else:
+        entries = util.list_entries()
         title = request.POST["title"]
+        for entry in entries:
+            if entry == title:
+                return render(request, "encyclopedia/error.html", {
+                    "error": "exist"
+                })
         text = request.POST["text"]
         util.save_entry(title, text)
         return redirect('title', title=title)
-    
 
 def edit(request, title):
     if request.method == "GET":
@@ -58,8 +67,7 @@ def edit(request, title):
     else:
         text = request.POST["text"]
         util.save_entry(title, text)
-        return redirect('title', title=title)
-    
+        return redirect('title', title=title)    
 
 def rand(request):
     entries = util.list_entries()

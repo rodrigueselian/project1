@@ -5,5 +5,12 @@
 {% endblock %}
 
 {% block body %}
-    <h1>deu ruim</h1>>
+    <h1>Whoops. Something went wrong!</h1>
+    {% if error == "noresults" %}
+        <h2>No results found!</h2>
+    {% elif error == "notfound" %}
+        <h2>404 Not found!</h2>
+    {% elif error == "exist" %}
+        <h2>This page already exists!</h2>
+    {% endif %}
 {% endblock %}
